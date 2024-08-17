@@ -5,8 +5,29 @@ import styles from '../styles/Home.module.css'
 import Link from 'next/link'
 import Layout from '../components/Layout'
 import utilStyle from "../styles/utils.module.css"
+import { getPostsData } from '../lib/post'
 
-export default function Home() {
+export async function getStaticProps() {
+  const allPostsData = getPostsData();
+  console.log(allPostsData);
+
+  return {
+    props: {
+      allPostsData,
+    }
+  }
+
+}
+
+// export async function getServerSideProps(context) {
+//   return {
+//     props: {
+
+//     }
+//   }
+// }
+
+export default function Home({ allPostsData }) {
   return (
     <Layout>
       <section className={utilStyle.headingMd}>
@@ -17,42 +38,22 @@ export default function Home() {
       <section className={`${utilStyle.headingMd} ${utilStyle.paddig1px}`}>
         <h2>📝エンジニアブログ</h2>
         <div className={styles.grid}>
-          <article>
-            <Link href="/">
-              <img src='/' alt='アイコン画像1' className={styles.thumbnailImage}/>
-            </Link>
-            <Link href="/">
-            </Link>
-            <br />
-            <small className={utilStyle.lightText}>August, 8, 2024</small>
-          </article>
-          <article>
-            <Link href="/">
-              <img src='/' alt='アイコン画像1' className={styles.thumbnailImage}/>
-            </Link>
-            <Link href="/">
-            </Link>
-            <br />
-            <small className={utilStyle.lightText}>August, 8, 2024</small>
-          </article>
-          <article>
-            <Link href="/">
-              <img src='/' alt='アイコン画像1' className={styles.thumbnailImage}/>
-            </Link>
-            <Link href="/">
-            </Link>
-            <br />
-            <small className={utilStyle.lightText}>August, 8, 2024</small>
-          </article>
-          <article>
-            <Link href="/">
-              <img src='/' alt='アイコン画像1' className={styles.thumbnailImage}/>
-            </Link>
-            <Link href="/">
-            </Link>
-            <br />
-            <small className={utilStyle.lightText}>August, 8, 2024</small>
-          </article>
+          {allPostsData.map(({id, title, date, thumbnail}) => {
+            return (
+              <article key={id}>
+                <Link href={`/posts/${id}`}>
+                  <img src={`${thumbnail}`} alt='アイコン画像1' className={styles.thumbnailImage}/>
+                </Link>
+                <Link href={`/posts/${id}`}>
+                  <a className={utilStyle.boldText}>{title}</a>
+                </Link>
+                <br />
+                <small className={utilStyle.lightText}>{date}</small>
+              </article>
+            )
+          })}
+          
+         
         </div>
       </section>
     </Layout>
